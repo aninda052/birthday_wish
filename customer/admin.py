@@ -1,3 +1,7 @@
+# external imports
 from django.contrib import admin
 
-# Register your models here.
+# internal imports
+from .models import Customer
+
+admin.site.register(Customer)
