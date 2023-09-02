@@ -1,15 +1,20 @@
 # external imports
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.db.models.signals import post_save
 from django.utils.crypto import get_random_string
 # Create your models here.
 
-class Customer(AbstractUser):
+class Customer(models.Model):
+    username = models.CharField(max_length=30, unique=True)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    email = models.EmailField(unique=True, null=False)
+    is_active = models.BooleanField(default=True)
     date_of_birth = models.DateField(null=False)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
 
 
 def create_username(sender, instance, created, **kwargs):
