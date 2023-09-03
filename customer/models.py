@@ -2,11 +2,9 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.crypto import get_random_string
-from django.conf import settings
-from django_celery_beat.models import CrontabSchedule, PeriodicTask
-import json
 
 # internal imports
+from tasks import set_schedule_for_birthday_wish_task
 
 # Create your models here.
 class Customer(models.Model):
@@ -32,26 +30,7 @@ def create_username(sender, instance, created, **kwargs):
 
         instance.username = new_username
         instance.save()
-
-        birthday_schedule, _ = CrontabSchedule.objects.get_or_create(
-            minute='00',
-            hour='00',
-            day_of_month=instance.date_of_birth.day,
-            month_of_year=instance.date_of_birth.month,
-            timezone=settings.TIME_ZONE
-        )
-
-        PeriodicTask.objects.create(
-            crontab=birthday_schedule,
-            name=f'birthday_schedule_for_{new_username}',
-            task='customer.tasks.send_email_on_birthday_task',
-            kwargs=json.dumps(
-                {
-                    "email_address": instance.email,
-                    "username": new_username,
-                }
-            ),
-        )
+        set_schedule_for_birthday_wish_task.delay(instance.email, instance.date_of_birth, new_username)
 
 
 post_save.connect(create_username, sender=Customer)
