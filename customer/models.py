@@ -2,10 +2,11 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.utils.crypto import get_random_string
-from django.core.mail import send_mail
-from django.conf import settings
-# Create your models here.
 
+# internal imports
+from .tasks import send_email_on_birthday_task
+
+# Create your models here.
 class Customer(models.Model):
     username = models.CharField(max_length=30, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
@@ -29,14 +30,7 @@ def create_username(sender, instance, created, **kwargs):
 
         instance.username = new_username
         instance.save()
-        send_email(instance.email, new_username)
+
+        send_email_on_birthday_task.delay(instance.email, new_username)
 
 post_save.connect(create_username, sender=Customer)
-
-
-def send_email(email_address, username):
-    subject = 'Happy Birthday!!!'
-    message = f'Hi {username}, Happy Birthday to you'
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = [email_address ]
-    send_mail(subject, message, email_from, recipient_list)
