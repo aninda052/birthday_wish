@@ -136,3 +136,8 @@ EMAIL_HOST = config('EMAIL_HOST', default='your_host')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='your_mail')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='your_password')
 EMAIL_PORT = config('EMAIL_PORT', default=587)
+
+
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
