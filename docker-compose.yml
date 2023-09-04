@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+#  db:
+#    container_name: postgres-db
+#    restart: unless-stopped
+#    image: postgres:13-alpine3.15
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data/
+#    environment:
+#      POSTGRES_DB: postgres
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
+#
+  redis:
+    restart: unless-stopped
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
+  web-server:
+    container_name: birthday-wish
+    restart: unless-stopped
+    build: .
+    volumes:
+      - .:/birthday_wish
+    ports:
+      - 8000:8000
+    depends_on:
+      - redis
+#      - db
+
+  celery-worker:
+    build: .
+    volumes:
+      - .:/birthday_wish
+    command: celery -A birthday_wish worker -l info --concurrency 3
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    volumes:
+      - .:/birthday_wish
+    command: celery -A birthday_wish beat -l info
+    depends_on:
+      - redis
+
+volumes:
+    postgres_data:
