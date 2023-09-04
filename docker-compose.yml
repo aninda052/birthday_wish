@@ -22,8 +22,12 @@ services:
     container_name: birthday-wish
     restart: unless-stopped
     build: .
-    volumes:
-      - .:/birthday_wish
+    entrypoint: /birthday_wish/server-entrypoint.sh
+#    volumes:
+#      - .:/birthday_wish
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379
+      CELERY_RESULT_BACKEND: redis://redis:6379
     ports:
       - 8000:8000
     depends_on:
@@ -32,13 +36,19 @@ services:
 
   celery-worker:
     build: .
-    command: celery -A birthday_wish worker -l info --concurrency 3
+    entrypoint: /birthday_wish/worker-entrypoint.sh
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379
+      CELERY_RESULT_BACKEND: redis://redis:6379
     depends_on:
       - redis
 
   celery-beat:
     build: .
-    command: celery -A birthday_wish beat -l info
+    entrypoint: /birthday_wish/beat-entrypoint.sh
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379
+      CELERY_RESULT_BACKEND: redis://redis:6379
     depends_on:
       - redis
 
