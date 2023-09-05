@@ -8,10 +8,14 @@ import json
 # internal imports
 from util.email import send_email
 
-
 logger = get_task_logger(__name__)
 
-@shared_task()
+def log_celery_task_failure(self, exc, task_id, args, kwargs, einfo):
+    logger.error(f"task failed with billow kwargs")
+    logger.error(kwargs)
+
+
+@shared_task(autoretry_for=(Exception,), retry_kwargs={'max_retries': 3, 'countdown': 10}, on_failure=log_celery_task_failure)
 def send_email_on_birthday_task(email_address, username):
     '''
     Send an email on customer birthday
@@ -21,7 +25,7 @@ def send_email_on_birthday_task(email_address, username):
     :param message: email body
     :return: None
     '''
-    logger.info(f"sending birthday wish for {username}")
+    logger.info(f"sending birthday wish to {username}")
 
     email_subject = "Happy Birthday"
     email_body = f"""
@@ -42,10 +46,10 @@ def set_schedule_for_birthday_wish_task(email_address, date_of_birth, username):
     :return: None
     '''
 
-    logger.info(f"sending birthday wish for {username}")
+    logger.info(f"schedule job for {username}")
 
     birthday_schedule, _ = CrontabSchedule.objects.get_or_create(
-        minute='00',
+        minute='0',
         hour='00',
         day_of_month=date_of_birth.day,
         month_of_year=date_of_birth.month,

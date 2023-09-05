@@ -46,6 +46,8 @@ services:
     restart: unless-stopped
     build: .
     entrypoint: /usr/local/bin/worker-entrypoint.sh
+    volumes:
+      - .:/birthday_wish
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379
@@ -62,6 +64,8 @@ services:
     restart: unless-stopped
     build: .
     entrypoint: /usr/local/bin/beat-entrypoint.sh
+    volumes:
+      - .:/birthday_wish
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379
