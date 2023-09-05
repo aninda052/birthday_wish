@@ -1,17 +1,19 @@
 version: '3'
 
 services:
-#  db:
-#    container_name: postgres-db
-#    restart: unless-stopped
-#    image: postgres:13-alpine3.15
-#    volumes:
-#      - postgres_data:/var/lib/postgresql/data/
-#    environment:
-#      POSTGRES_DB: postgres
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#
+  db:
+    container_name: postgres-db
+    restart: unless-stopped
+    image: postgres:13-alpine3.15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+
   redis:
     restart: unless-stopped
     image: redis:alpine
@@ -28,27 +30,47 @@ services:
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379
+      DATABASE: postgresql
+      POSTGRES_HOST: db
+      POSTGRES_NAME: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
     ports:
       - 8000:8000
     depends_on:
       - redis
-#      - db
+      - db
 
   celery-worker:
+    restart: unless-stopped
     build: .
     entrypoint: /birthday_wish/worker-entrypoint.sh
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379
+      DATABASE: postgresql
+      POSTGRES_HOST: db
+      POSTGRES_NAME: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
     depends_on:
       - redis
 
   celery-beat:
+    restart: unless-stopped
     build: .
     entrypoint: /birthday_wish/beat-entrypoint.sh
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379
+      DATABASE: postgresql
+      POSTGRES_HOST: db
+      POSTGRES_NAME: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
     depends_on:
       - redis
 
