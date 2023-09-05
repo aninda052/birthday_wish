@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y python3-dev gcc libpq-dev
 
 COPY . /birthday_wish
 WORKDIR /birthday_wish
+RUN mkdir -p logs
 
 RUN pip install -r requirements.txt
 

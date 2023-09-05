@@ -162,3 +162,71 @@ EMAIL_PORT = config('EMAIL_PORT', default=587)
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379')
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    'handlers': {
+        'info': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(BASE_DIR) + '/logs/info.log',
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB LOG FILE SIZE
+            "level": "INFO",
+            'mode': 'a',
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'warning': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(BASE_DIR) + '/logs/warning.log',
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB LOG FILE SIZE
+            "level": "WARNING",
+            'mode': 'a',
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        'celery.info': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': str(BASE_DIR) + '/logs/celery_info.log',
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB LOG FILE SIZE
+            "level": "INFO",
+            'mode': 'a',
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'info'],
+            'level': 'INFO',
+            "propagate": True,
+        },
+        'django.request': {
+            'handlers': ['warning'],
+            'level': 'WARNING',
+            "propagate": False,
+        },
+        'celery': {
+            'handlers': ['console', 'celery.info'],
+            'level': "INFO",
+            "propagate": False,
+        },
+
+    }
+}

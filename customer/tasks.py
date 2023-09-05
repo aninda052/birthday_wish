@@ -8,11 +8,12 @@ import json
 # internal imports
 from util.email import send_email
 
+
 logger = get_task_logger(__name__)
 
 def log_celery_task_failure(self, exc, task_id, args, kwargs, einfo):
-    logger.error(f"task failed with billow kwargs")
-    logger.error(kwargs)
+    logger.error(f"task [{task_id}] failed with billow kwargs")
+    logger.error(f"[{task_id}] {kwargs}")
 
 
 @shared_task(autoretry_for=(Exception,), retry_kwargs={'max_retries': 3, 'countdown': 10}, on_failure=log_celery_task_failure)
