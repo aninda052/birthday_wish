@@ -24,9 +24,9 @@ services:
     container_name: birthday-wish
     restart: unless-stopped
     build: .
-    entrypoint: /birthday_wish/server-entrypoint.sh
-#    volumes:
-#      - .:/birthday_wish
+    entrypoint: /usr/local/bin/server-entrypoint.sh
+    volumes:
+      - .:/birthday_wish
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379
@@ -45,7 +45,7 @@ services:
   celery-worker:
     restart: unless-stopped
     build: .
-    entrypoint: /birthday_wish/worker-entrypoint.sh
+    entrypoint: /usr/local/bin/worker-entrypoint.sh
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379
@@ -61,7 +61,7 @@ services:
   celery-beat:
     restart: unless-stopped
     build: .
-    entrypoint: /birthday_wish/beat-entrypoint.sh
+    entrypoint: /usr/local/bin/beat-entrypoint.sh
     environment:
       CELERY_BROKER_URL: redis://redis:6379
       CELERY_RESULT_BACKEND: redis://redis:6379

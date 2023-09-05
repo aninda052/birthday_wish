@@ -7,9 +7,13 @@ WORKDIR /birthday_wish
 
 RUN pip install -r requirements.txt
 
-RUN chmod +x /birthday_wish/worker-entrypoint.sh
-RUN chmod +x /birthday_wish/beat-entrypoint.sh
-RUN chmod +x /birthday_wish/server-entrypoint.sh
+COPY server-entrypoint.sh /usr/local/bin/server-entrypoint.sh
+COPY worker-entrypoint.sh /usr/local/bin/worker-entrypoint.sh
+COPY beat-entrypoint.sh /usr/local/bin/beat-entrypoint.sh
+
+RUN chmod +x /usr/local/bin/server-entrypoint.sh
+RUN chmod +x /usr/local/bin/worker-entrypoint.sh
+RUN chmod +x /usr/local/bin/beat-entrypoint.sh
 
 
 
