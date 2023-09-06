@@ -1,6 +1,6 @@
 # external imports
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import pre_save
 from django.utils.crypto import get_random_string
 
 # internal imports
@@ -20,8 +20,19 @@ class Customer(models.Model):
 
 
 
-def create_username(sender, instance, created, **kwargs):
-    if created:
+def assign_username(sender, instance, **kwargs):
+    '''
+    Before creating a new customer object, assign a unique username
+    for the customer object
+    :param sender:
+    :param instance:
+    :param kwargs:
+    :return:
+    '''
+
+    # True only if this is new instance
+    # meaning object is not yet created nor it's an update operation
+    if not instance.id:
         username = instance.email.split('@')[0]
         new_username = username
         while sender.objects.filter(username=new_username).exists():
@@ -29,8 +40,7 @@ def create_username(sender, instance, created, **kwargs):
             new_username = username + random_str
 
         instance.username = new_username
-        instance.save()
         set_schedule_for_birthday_wish_task.delay(instance.email, instance.date_of_birth, new_username)
 
 
-post_save.connect(create_username, sender=Customer)
+pre_save.connect(assign_username, sender=Customer)
