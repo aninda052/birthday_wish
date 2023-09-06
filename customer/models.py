@@ -21,12 +21,11 @@ class Customer(models.Model):
 
     def assign_new_username(self):
         username = self.email.split('@')[0]
-        new_username = username
-        while type(self).objects.filter(username=new_username).exists():
+        self.username = username
+        while type(self).objects.filter(username=self.username).exists():
             random_str = get_random_string(length=2, allowed_chars='0123456789')
-            new_username = username + random_str
+            self.username = username + random_str
 
-        self.username = new_username
 
     def save(self, new_customer=False, *args, **kwargs, ):
         if not self.username:
@@ -50,15 +49,14 @@ class Customer(models.Model):
 #
 #     # True only if this is new instance
 #     # meaning object is not yet created nor it's an update operation
-#     if not instance.id:
+#     if not instance.username:
 #         username = instance.email.split('@')[0]
-#         new_username = username
-#         while sender.objects.filter(username=new_username).exists():
+#         instance.username = username
+#         while sender.objects.filter(username=instance.username).exists():
 #             random_str = get_random_string(length=2, allowed_chars='0123456789')
-#             new_username = username + random_str
+#             instance.username = username + random_str
 #
-#         instance.username = new_username
-#         set_schedule_for_birthday_wish_task.delay(instance.email, instance.date_of_birth, new_username)
+#         set_schedule_for_birthday_wish_task.delay(instance.email, instance.date_of_birth, instance.username)
 #
 #
 # pre_save.connect(assign_username, sender=Customer)
