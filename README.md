@@ -40,7 +40,7 @@ Create a `.env` file for your environment variable.
 ```
 
 You can find the details of all the variables in `.env.example` file.
-For running the project just copy billow dummy information and past it to your .env file and save it.
+For running the application just copy billow dummy information and past it to your .env file and save it.
 
 ```
 DEBUG=True
@@ -52,9 +52,17 @@ CELERY_RESULT_BACKEND=redis://localhost:6379
 DATABASE=sqlite
 ```
 
-### Running The project 
+#### creating `logs` directory
 
-You can run the project in 2 ways
+Create `logs` directory where application logs will be store.
+
+```
+ mkdir logs
+```
+
+### Running The Application 
+
+You can run the application in 2 ways
 
 - ####  Using `runserver`  command
 
@@ -86,7 +94,7 @@ python manage.py runserver 8000
 
 - #### Using `docker-compose`
 
-To run the project using `docker-compose`; `docker` and `docker-compose` must be installed on your system. 
+To run the application using `docker-compose`; `docker` and `docker-compose` must be installed on your system. 
 For installation instructions refer to the Docker [docs](https://docs.docker.com/compose/install/).
 
 After you installing `docker` and `docker-compose` properly, run -
@@ -95,11 +103,11 @@ After you installing `docker` and `docker-compose` properly, run -
 docker-compose up --build
 ```
 
-If everything went well, go to `http://127.0.0.1:8000` and you'll find the project up and running.
+If everything went well, go to `http://127.0.0.1:8000` and you'll find the application up and running.
 
 ## Api
 
-To add a customer use billow end point with `POST` request -
+To add a customer, use billow end point with `POST` request -
 
 ```
 http://localhost:8000/api/add-customer/
