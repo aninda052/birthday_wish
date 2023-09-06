@@ -9,7 +9,7 @@ from .tasks import set_schedule_for_birthday_wish_task
 
 # Create your models here.
 class Customer(models.Model):
-    username = models.CharField(max_length=30, unique=True)
+    username = models.CharField(max_length=30, unique=True, null=False)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
     email = models.EmailField(unique=True, null=False)
