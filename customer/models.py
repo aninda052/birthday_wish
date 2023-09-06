@@ -16,7 +16,7 @@ class Customer(models.Model):
     date_of_birth = models.DateField(null=False)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return self.email
 
 
 
