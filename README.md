@@ -24,86 +24,100 @@ technologies installed on your local machine:
 
 ## Installation
 
-#### Cloning the project
+To run the project locally, follow these steps
+    
+- ### Cloning the project
 
-```
-https://github.com/aninda052/birthday_wish.git
-cd birthday_wish
-```
+    Open your favourite terminal and run billow commands-
+    
+    ```
+    git clone https://github.com/aninda052/birthday_wish.git
+    cd birthday_wish
+    ```
 
-#### creating `.env` file
+- ### Creating `.env` file
 
-Create a `.env` file for your environment variable.
+    Create a `.env` file for your environment variable.
+    
+    ```
+     touch .env
+    ```
+    
+    You can find the details of all the variables in `.env.example` file.
+    For running the application just copy billow dummy information and past it to your .env file and save it.
+    
+    ```
+    DEBUG=True
+    SECRET_KEY=xy+y*vn5(^^&qp-q5zx@-^@o+v%sw)$y9)o1zskb4y*0khdnaa
+    
+    CELERY_BROKER_URL=redis://localhost:6379
+    CELERY_RESULT_BACKEND=redis://localhost:6379
+    
+    DATABASE=sqlite
+    ```
 
-```
- touch .env
-```
+- ### Creating `logs` directory
+    
+    Create `logs` directory where application logs will be store.
+    
+    ```
+     mkdir logs
+    ```
 
-You can find the details of all the variables in `.env.example` file.
-For running the application just copy billow dummy information and past it to your .env file and save it.
+- ### Running The Application 
 
-```
-DEBUG=True
-SECRET_KEY=xy+y*vn5(^^&qp-q5zx@-^@o+v%sw)$y9)o1zskb4y*0khdnaa
+    You can run the application in 2 ways
 
-CELERY_BROKER_URL=redis://localhost:6379
-CELERY_RESULT_BACKEND=redis://localhost:6379
+  - ####  Using `runserver`  command
 
-DATABASE=sqlite
-```
+    - ##### Run `Django` server
 
-#### creating `logs` directory
+      <pre>
+        # create a virtual environment using <a href="https://virtualenv.pypa.io/en/latest/installation.html">virtualenv</a>
+        virtualenv -p python3.9 venv
+            
+        # Activate virtual environment
+        source venv/bin/activate
+            
+        # Install all required python packages
+        pip install -r requirements.txt
+            
+        # generate database migration files
+        python manage.py makemigrations
+            
+        # migrate new changes on database
+        python manage.py migrate --no-input
+            
+        # create initial superuser
+        DJANGO_SUPERUSER_PASSWORD=admin DJANGO_SUPERUSER_USERNAME=admin DJANGO_SUPERUSER_EMAIL=admin@email.com python manage.py createsuperuser --noinput
+            
+        # run user server at port 8000
+        python manage.py runserver 8000
+      </pre>
 
-Create `logs` directory where application logs will be store.
+    - #####  Run `CELERY` service
 
-```
- mkdir logs
-```
+      Open another terminal and run billow command. Make sure you are in your project (`birthday_wish`)
+      directory.
 
-### Running The Application 
+      ```
+       celery -A birthday_wish worker -B -l info --concurrency 4
+      ```
 
-You can run the application in 2 ways
+  - #### Using `docker-compose`
 
-- ####  Using `runserver`  command
+      To run the application using `docker-compose`; `docker` and `docker-compose` must be installed on your system. 
+      For installation instructions refer to the Docker [docs](https://docs.docker.com/compose/install/).
+    
+      After you installing `docker` and `docker-compose` properly, run -
+    
+      ```
+      docker-compose up --build
+      ```
+      Note: If the above command run successfully, a initial `superuser` will be created with `username=admin` and
+      `password=admin`.
 
-<pre>
-
-# create a virtual environment using <a href="https://virtualenv.pypa.io/en/latest/installation.html">virtualenv</a>
-virtualenv -p python3 venv
-
-# Activate virtual environment
-source venv/bin/activate
-
-# Install all required python packages
-pip install -r requirements.txt
-
-# generate database migration files
-python manage.py makemigrations
-
-# migrate new changes on database
-python manage.py migrate --no-input
-
-# create initial superuser
-DJANGO_SUPERUSER_PASSWORD=admin DJANGO_SUPERUSER_USERNAME=admin DJANGO_SUPERUSER_EMAIL=admin@email.com python manage.py createsuperuser --noinput
-
-# run user server at port 8000
-python manage.py runserver 8000
-
-</pre>
-
-
-- #### Using `docker-compose`
-
-To run the application using `docker-compose`; `docker` and `docker-compose` must be installed on your system. 
-For installation instructions refer to the Docker [docs](https://docs.docker.com/compose/install/).
-
-After you installing `docker` and `docker-compose` properly, run -
-
-```
-docker-compose up --build
-```
-
-If everything went well, go to `http://127.0.0.1:8000` and you'll find the application up and running.
+If everything went well, go to [`http://127.0.0.1:8000`](http://127.0.0.1:8000) and you'll find the application up and running.
 
 ## Api
 
@@ -115,13 +129,14 @@ http://localhost:8000/api/add-customer/
 Note: `Django REST framework` provide [self describing APIs](https://www.django-rest-framework.org/topics/documenting-your-api/#self-describing-apis).
 So you can just hit the above endpoint from your browser and get the documentation.
 
-##### Request Body
+- ##### Request Body
 
-```
-{
-    "email" : "customer_email@email.com",
-    "date_of_birth": "YYYY-MM-DD",
-    "first_name": "customer_first_name",
-    "last_name": "customer_last_name"
-}
-```
+    ```
+    {
+        "email" : "customer_email@email.com",
+        "date_of_birth": "YYYY-MM-DD",
+        "first_name": "customer_first_name",
+        "last_name": "customer_last_name"
+    }
+    ```
+###### Go to [`http://127.0.0.1:8000/admin/`](http://127.0.0.1:8000/admin/) and login with your `superuser` credential to see your customer data along with their birthday schedule. 
