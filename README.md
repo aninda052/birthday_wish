@@ -98,7 +98,7 @@ To run the project locally, follow these steps
     - #####  Run `CELERY` service
 
       Open another terminal and run billow command. Make sure you are in your project (`birthday_wish`)
-      directory.
+      directory and you activate your virtual environment (`source venv/bin/activate`)
 
       ```
        celery -A birthday_wish worker -B -l info --concurrency 4
