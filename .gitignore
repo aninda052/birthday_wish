@@ -78,8 +78,10 @@ celerybeat.pid
 # SageMath parsed files
 *.sage.py
 **/migrations/*
+!**/migrations/__init__.py
 # Environments
-migrations
+migrations/*
+!migrations/__init__.py
 .env
 .venv
 static/

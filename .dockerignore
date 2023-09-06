@@ -3,5 +3,8 @@ db.sqlite3
 __pycache__/
 *.log
 **/migrations/*
+!**/migrations/__init__.py
+migrations/*
+!migrations/__init__.py
 venv/
 .idea
