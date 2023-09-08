@@ -33,6 +33,7 @@ def send_email_on_birthday_task(email_address, username):
                 Hi {username}
                 Wish you many happy returns of the day :)
                """
+... # this line will through error without valid email credential
     send_email(email_address, email_subject, email_body)
 
 
